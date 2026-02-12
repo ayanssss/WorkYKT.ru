@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Заказчик</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f0f0f0;
+  }
+
+  /* Хедер */
+  .header {
+    display: flex;
+    align-items: center;
+    background-color: #4CAF50;
+    padding: 10px 20px;
+    color: white;
+  }
+
+  .back-arrow {
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 15px;
+    user-select: none;
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+
+  /* Контент страницы */
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+  }
+
+  button {
+    width: 200px;
+    padding: 15px;
+    margin: 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    transition: background-color 0.3s;
+  }
+
+  button:hover {
+    background-color: #45a049;
+  }
+</style>
+</head>
+<body>
+
+<!-- Хедер -->
+<div class="header">
+  <div class="back-arrow" onclick="location.href='index.html'">&larr;</div>
+  <h1>Заказчик</h1>
+</div>
+
+<!-- Основной контент -->
+<div class="container">
+  <button onclick="alert('Тут будут ваши заказы')">Мои заказы</button>
+  <button onclick="alert('Настройки пока не реализованы')">Настройки</button>
+</div>
+
+</body>
+</html>
