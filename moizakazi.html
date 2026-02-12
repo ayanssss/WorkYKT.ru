@@ -1,1 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Заказчик</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f0f0f0;
+  }
 
+  /* Хедер */
+  .header {
+    display: flex;
+    align-items: center;
+    background-color: #4CAF50;
+    padding: 10px 20px;
+    color: white;
+  }
+
+  .back-arrow {
+    font-size: 24px;
+    cursor: pointer;
+    margin-right: 15px;
+    user-select: none;
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+
+  /* Контент страницы */
+  .container {
+    max-width: 500px;
+    margin: 30px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  /* Заголовки */
+  .section-title {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  /* Поля для ввода */
+  textarea, input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+
+  /* Кнопка */
+  .button {
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-decoration: none; /* чтобы можно было использовать как ссылку */
+    display: inline-block;
+    text-align: center;
+  }
+
+  .button:hover {
+    background-color: #0b7dda;
+  }
+</style>
+</head>
+<body>
+
+<!-- Хедер -->
+<div class="header">
+  <div class="back-arrow" onclick="location.href='index.html'">&larr;</div>
+  <h1>Заказчик</h1>
+</div>
+
+<!-- Основной контент -->
+<div class="container">
+  <!-- Что потребуется -->
+  <div>
+    <div class="section-title">Что потребуется</div>
+    <textarea rows="4" placeholder="Опишите, что нужно выполнить..."></textarea>
+  </div>
+
+  <!-- Адрес -->
+  <div>
+    <div class="section-title">Адрес</div>
+    <input type="text" placeholder="Введите адрес выполнения" />
+  </div>
+
+  <!-- Кнопка "Возобновить" со ссылкой -->
+  <a href="mastera.html" class="button">Возобновить</a>
+</div>
+
+</body>
+</html>
