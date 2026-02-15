@@ -56,22 +56,7 @@
   }
 
   /* Кнопка */
-  .button {
-    width: 100%;
-    padding: 15px;
-    font-size: 16px;
-    background-color: #2196F3;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    text-decoration: none; /* для использования как ссылка */
-    display: inline-block;
-    text-align: center;
-  }
-
-  .button:hover {
+  button.zakazchik:hover {
     background-color: #0b7dda;
   }
   input[type="text"], textarea {
@@ -94,26 +79,27 @@ textarea:focus {
 }
 
 /* Кнопка с чуть меньшей шириной и адаптивностью */
-.button {
-  max-width: 200px; /* Максимальная ширина, чтобы поместилась */
-  width: 100%;
-  padding: 12px 0;
-  font-size: 16px;
-  background-color: #2196F3;
-  color: white;
-  text-align: center;
-  border: none;
-  border-radius: 7px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  display: block; /* чтобы была блочной и занимала всю ширину */
-  margin: 0 auto; /* центрирование */
-  text-decoration: none;
-}
+  button {
+    width: 200px;
+    padding: 15px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50; /* Зеленый цвет по умолчанию */
+    color: white;
+    transition: background-color 0.3s;
+  }
 
-.button:hover {
-  background-color: #0b7dda;
-}
+  button:hover {
+    background-color: #45a049;
+  }
+
+  /* Можно задать разные цвета для кнопок, если хотите */
+  .zakazchik {
+    background-color: #2196F3; /* Синий */
+  }
 </style>
 </head>
 <body>
@@ -139,7 +125,7 @@ textarea:focus {
   </div>
 
   <!-- Кнопка "Возобновить" со ссылкой -->
-   <a href="mastera.html" class="button">Далее</a>
+  <button class="zakazchik" onclick="location.href='mastera.html'">Возобновить</button>
 </div>
 
 </body>
