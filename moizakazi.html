@@ -74,6 +74,46 @@
   .button:hover {
     background-color: #0b7dda;
   }
+  input[type="text"], textarea {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 15px;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
+
+input[type="text"]:focus, 
+textarea:focus {
+  border-color: #2196F3;
+  box-shadow: 0 0 8px rgba(33, 150, 243, 0.5);
+}
+
+/* Кнопка с чуть меньшей шириной и адаптивностью */
+.button {
+  max-width: 200px; /* Максимальная ширина, чтобы поместилась */
+  width: 100%;
+  padding: 12px 0;
+  font-size: 16px;
+  background-color: #2196F3;
+  color: white;
+  text-align: center;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: block; /* чтобы была блочной и занимала всю ширину */
+  margin: 0 auto; /* центрирование */
+  text-decoration: none;
+}
+
+.button:hover {
+  background-color: #0b7dda;
+}
 </style>
 </head>
 <body>
@@ -99,7 +139,7 @@
   </div>
 
   <!-- Кнопка "Возобновить" со ссылкой -->
-  <a href="mastera.html" class="button">Возобновить</a>
+   <a href="mastera.html" class="button">Далее</a>
 </div>
 
 </body>
