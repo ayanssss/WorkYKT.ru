@@ -1,1 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Мастер</title>
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        display: flex;
+        flex-direction: column;
+    }
+    /* Хедер */
+    header {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        background: white;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .back-arrow {
+        font-size: 24px;
+        cursor: pointer;
+        text-decoration: none;
+        color: black;
+        margin-right: 10px;
+    }
+    h1 {
+        margin: 0;
+        font-size: 20px;
+    }
+    /* Контейнер для кнопок */
+    .buttons-container {
+        flex-grow: 1; /* занимает все пространство между хедером и футером */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* вертикальное центрирование */
+        align-items: center; /* горизонтальное центрирование */
+        gap: 20px;
+        padding: 20px;
+    }
+    button {
+        width: 80%;
+        max-width: 300px;
+        height: 80px;
+        font-size: 24px;
+        cursor: pointer;
+        border: none;
+        border-radius: 10px;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+    button:hover {
+        background-color: #ddd;
+        transform: scale(1.05);
+    }
+    .my-orders {
+        background-color: #4CAF50;
+        color: white;
+    }
+    .settings {
+        background-color: #008CBA;
+        color: white;
+    }
+</style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="back-arrow" title="Назад">&larr;</a>
+        <h1>Мастер</h1>
+    </header>
 
+    <div class="buttons-container">
+        <button class="my-orders" onclick="location.href='master-orders.html'">Мои заказы</button>
+        <button class="settings" onclick="location.href='settings.html'">Настройки</button>
+    </div>
+</body>
+</html>
