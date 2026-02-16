@@ -1,117 +1,64 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Мои заказы - Мастер</title>
-<style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        background-color: #f0f0f0;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-    }
-    header {
-        height: 60px;
-        display: flex;
-        align-items: center;
-        padding: 0 20px;
-        background: white;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    }
-    .back-arrow {
-        font-size: 24px;
-        cursor: pointer;
-        text-decoration: none;
-        color: black;
-        margin-right: 10px;
-        user-select: none;
-    }
-    h1 {
-        margin: 0;
-        font-size: 20px;
-    }
-    main {
-        flex-grow: 1;
-        padding: 0 20px 20px;
-        overflow-y: auto;
-    }
-    .order-block {
-        background: white;
-        padding: 15px;
-        margin-top: 25px;
-        margin-bottom: 15px;
-        border-radius: 10px;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
-    .order-block:hover {
-        background-color: #e8e8e8;
-    }
-    .order-desc {
-        font-weight: bold;
-        margin-bottom: 8px;
-    }
-    .order-address {
-        font-style: italic;
-        color: #555;
-    }
-</style>
+  <meta charset="UTF-8" />
+  <title>Просмотр заказов</title>
 </head>
 <body>
+  <h2>Заказы</h2>
+  <div id="ordersList">Здесь будут заказы</div>
 
-<header>
-    <a href="master.html" class="back-arrow" title="Назад">&larr;</a>
-    <h1>Мои заказы</h1>
-</header>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-<main id="ordersContainer">
-    <!-- Заказы будут вставлены сюда скриптом -->
-</main>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJ_U2qYotnhVwZZGhnAqEM7IETF9fscb8",
+      authDomain: "workykt-aa8e7.firebaseapp.com",
+      projectId: "workykt-aa8e7",
+      storageBucket: "workykt-aa8e7.firebasestorage.app",
+      messagingSenderId: "133063582958",
+      appId: "1:133063582958:web:4e97b790a5179270dd7fff",
+      measurementId: "G-SKZ0NRH7XJ"
+    };
 
-<script>
-// Функция для загрузки заказов из localStorage
-function loadOrders() {
-    const container = document.getElementById('ordersContainer');
-    container.innerHTML = '';
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    // Получаем массив заказов из localStorage
-    // Ожидаем, что там хранится JSON-массив объектов с {requirements, address}
-    let orders = JSON.parse(localStorage.getItem('clientOrders') || '[]');
+    const ordersDiv = document.getElementById('ordersList');
 
-    if (orders.length === 0) {
-        container.innerHTML = '<p>Нет заказов.</p>';
-        return;
+    async function загрузитьЗаказы() {
+      try {
+        const q = query(collection(db, "orders"), orderBy('timestamp', 'desc'));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+          ordersDiv.innerHTML = 'Нет заказов';
+          return;
+        }
+
+        ordersDiv.innerHTML = '';
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const div = document.createElement('div');
+          div.style.border = '1px solid #ccc';
+          div.style.padding = '10px';
+          div.style.marginBottom = '10px';
+          div.innerHTML = `
+            <b>Что требуется:</b><br>
+            <div style="white-space: pre-wrap;">${data.requirements}</div>
+            <b>Телефон:</b> <a href="tel:${data.phone}">${data.phone}</a><br>
+            <small>Дата: ${data.timestamp?.toDate().toLocaleString()}</small>
+          `;
+          ordersDiv.appendChild(div);
+        });
+      } catch (err) {
+        ordersDiv.textContent = 'Ошибка загрузки заказов: ' + err.message;
+      }
     }
 
-    orders.forEach((order, index) => {
-        const block = document.createElement('div');
-        block.className = 'order-block';
-        block.tabIndex = 0; // для фокусировки
-        block.setAttribute('role', 'button');
-        block.setAttribute('aria-label', `Заказ: ${order.requirements}, адрес: ${order.address}`);
-        
-        block.innerHTML = `
-            <div class="order-desc">${order.requirements || '(Описание отсутствует)'}</div>
-            <div class="order-address">${order.address || '(Адрес отсутствует)'}</div>
-        `;
-
-        // При клике сохранить индекс выбранного заказа и перейти на страницу с деталями
-        block.onclick = () => {
-            localStorage.setItem('selectedOrderIndex', index);
-            window.location.href = 'master_order_detail.html';
-        };
-
-        container.appendChild(block);
-    });
-}
-
-loadOrders();
-</script>
-
+    loadOrders();
+    setInterval(loadOrders, 5000);
+  </script>
 </body>
 </html>
