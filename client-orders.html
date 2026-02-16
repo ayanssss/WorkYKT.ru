@@ -1,135 +1,57 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Закзчик</title>
-<style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        background-color: #f0f0f0;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-    header {
-        height: 60px;
-        background: white;
-        display: flex;
-        align-items: center;
-        padding: 0 20px;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-        user-select: none;
-    }
-    .back-arrow {
-        font-size: 24px;
-        cursor: pointer;
-        text-decoration: none;
-        color: black;
-        margin-right: 10px;
-    }
-    h1 {
-        margin: 0;
-        font-size: 20px;
-    }
-    main {
-        flex-grow: 1;
-        padding: 20px;
-    }
-    form {
-        background: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        max-width: 500px;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-    }
-    label {
-        display: flex;
-        flex-direction: column;
-        font-weight: 600;
-        color: #444;
-        font-size: 14px;
-    }
-    input[type="text"] {
-        margin-top: 8px;
-        padding: 10px 12px;
-        font-size: 16px;
-        border: 1.5px solid #ccc;
-        border-radius: 8px;
-        transition: border-color 0.3s;
-    }
-    input[type="text"]:focus {
-        border-color: #007bff;
-        outline: none;
-    }
-    button {
-        background-color: #007bff;
-        color: white;
-        border: none;
-        padding: 14px;
-        border-radius: 10px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-        font-weight: bold;
-    }
-    button:hover {
-        background-color: #0056b3;
-    }
-</style>
+  <meta charset="UTF-8" />
+  <title>Отправить заказ</title>
 </head>
 <body>
+  <!-- Ваша форма для заказа -->
+  <form id="orderForm">
+    <label>Что требуется:</label><br>
+    <textarea id="requirements"></textarea><br>
+    <label>Телефон:</label><br>
+    <input type="tel" id="phone" required><br>
+    <button type="submit">Отправить заказ</button>
+  </form>
 
-<header>
-    <a href="client.html" class="back-arrow" title="Назад">&larr;</a>
-    <h1>Мои заказы</h1>
-</header>
+  <!-- Скрипт с Firebase SDK и вашей логикой -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-<main>
-    <form id="orderForm" autocomplete="off">
-        <label for="requirements">
-            Что потребуется:
-            <input type="text" id="requirements" name="requirements" required />
-        </label>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCJ_U2qYotnhVwZZGhnAqEM7IETF9fscb8",
+      authDomain: "workykt-aa8e7.firebaseapp.com",
+      projectId: "workykt-aa8e7",
+      storageBucket: "workykt-aa8e7.firebasestorage.app",
+      messagingSenderId: "133063582958",
+      appId: "1:133063582958:web:4e97b790a5179270dd7fff",
+      measurementId: "G-SKZ0NRH7XJ"
+    };
 
-        <label for="address">
-            Адрес:
-            <input type="text" id="address" name="address" required />
-        </label>
+    // Инициализация Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-        <button type="submit">Сохранить заказ</button>
-    </form>
-</main>
+    const form = document.getElementById('orderForm');
 
-<script>
-document.getElementById('orderForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const requirements = document.getElementById('requirements').value.trim();
+      const phone = document.getElementById('phone').value.trim();
 
-    const requirements = this.requirements.value.trim();
-    const address = this.address.value.trim();
-
-    if (!requirements || !address) {
-        alert('Пожалуйста, заполните оба поля');
-        return;
-    }
-
-    let orders = JSON.parse(localStorage.getItem('clientOrders') || '[]');
-    orders.push({ requirements, address });
-    localStorage.setItem('clientOrders', JSON.stringify(orders));
-
-    alert('Заказ сохранён!');
-    this.reset();
-
-    // Если надо — перейти на страницу списка заказов мастера
-    // window.location.href = 'master-orders.html';
-});
-</script>
-
+      try {
+        await addDoc(collection(db, 'orders'), {
+          requirements,
+          phone,
+          timestamp: new Date()
+        });
+        alert('Заказ отправлен!');
+        form.reset();
+      } catch (err) {
+        alert('Ошибка: ' + err.message);
+      }
+    });
+  </script>
 </body>
 </html>
