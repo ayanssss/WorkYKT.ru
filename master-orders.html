@@ -3,89 +3,47 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Просмотр заказов</title>
-<!-- Общий стиль для всех страниц -->
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
-    margin: 0;
-    padding: 20px;
-  }
-  h2 {
-    text-align: center;
-    color: #333;
-  }
-  #ordersList {
-    max-width: 700px;
-    margin: 0 auto;
-  }
-  .order {
-    background: #fff;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.1);
-  }
-  .order b {
-    display: block;
-    margin-top: 5px;
-  }
-  a {
-    color: #007bff;
-  }
-</style>
+<title>Все заказы</title>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js"></script>
 </head>
 <body>
-<h2>Заказы</h2>
-<div id="ordersList">Здесь будут заказы</div>
+<h1>Все заказы</h1>
+<ul id="ordersList"></ul>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-  import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
-
+<script>
   const firebaseConfig = {
-    apiKey: "AIzaSyCJ_U2qYotnhVwZZGhnAqEM7IETF9fscb8",
-    authDomain: "workykt-aa8e7.firebaseapp.com",
-    projectId: "workykt-aa8e7",
-    storageBucket: "workykt-aa8e7.firebasestorage.app",
-    messagingSenderId: "133063582958",
-    appId: "1:133063582958:web:4e97b790a5179270dd7fff",
-    measurementId: "G-SKZ0NRH7XJ"
+    apiKey: "ВАШ_API_KEY",
+    authDomain: "ВАШ_ДОМЕН.firebaseapp.com",
+    projectId: "ВАШ_PROJECT_ID",
+    storageBucket: "ВАШ_BUCKET.appspot.com",
+    messagingSenderId: "ВАШ_SENDER_ID",
+    appId: "ВАШ_APP_ID"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const ordersDiv = document.getElementById('ordersList');
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-  async function загрузитьЗаказы() {
-    try {
-      const q = query(collection(db, "orders"), orderBy('timestamp', 'desc'));
-      const snapshot = await getDocs(q);
-      if (snapshot.empty) {
-        ordersDiv.innerHTML = 'Нет заказов';
-        return;
-      }
-      ordersDiv.innerHTML = '';
+  const ordersList = document.getElementById('ordersList');
+
+  // Получение и отображение всех заказов в реальном времени
+  db.collection('orders').orderBy('timestamp', 'desc')
+    .onSnapshot(snapshot => {
+      ordersList.innerHTML = '';
       snapshot.forEach(doc => {
         const data = doc.data();
-        const div = document.createElement('div');
-        div.className = 'order';
-        div.innerHTML = `
-          <b>Что требуется:</b>
-          <div style="white-space: pre-wrap;">${data.requirements}</div>
-          <b>Телефон:</b> <a href="tel:${data.phone}">${data.phone}</a>
-          <small>Дата: ${data.timestamp?.toDate().toLocaleString()}</small>
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>Требования:</strong> ${data.requirements} <br>
+          <strong>Телефон:</strong> ${data.phone}<br>
+          <em>Заказ создан: ${data.timestamp ? data.timestamp.toDate() : ''}</em>
         `;
-        ordersDiv.appendChild(div);
+        ordersList.appendChild(li);
       });
-    } catch (err) {
-      ordersDiv.innerHTML = 'Ошибка загрузки заказов: ' + err.message;
-    }
-  }
-
-  загрузитьЗаказы();
-  setInterval(загрузитьЗаказы, 5000);
+    });
 </script>
 </body>
 </html>
+</html>
+
