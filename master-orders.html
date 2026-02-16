@@ -1,64 +1,91 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>Просмотр заказов</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Просмотр заказов</title>
+<!-- Общий стиль для всех страниц -->
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+  }
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+  #ordersList {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .order {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  }
+  .order b {
+    display: block;
+    margin-top: 5px;
+  }
+  a {
+    color: #007bff;
+  }
+</style>
 </head>
 <body>
-  <h2>Заказы</h2>
-  <div id="ordersList">Здесь будут заказы</div>
+<h2>Заказы</h2>
+<div id="ordersList">Здесь будут заказы</div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-    import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+  import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCJ_U2qYotnhVwZZGhnAqEM7IETF9fscb8",
-      authDomain: "workykt-aa8e7.firebaseapp.com",
-      projectId: "workykt-aa8e7",
-      storageBucket: "workykt-aa8e7.firebasestorage.app",
-      messagingSenderId: "133063582958",
-      appId: "1:133063582958:web:4e97b790a5179270dd7fff",
-      measurementId: "G-SKZ0NRH7XJ"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyCJ_U2qYotnhVwZZGhnAqEM7IETF9fscb8",
+    authDomain: "workykt-aa8e7.firebaseapp.com",
+    projectId: "workykt-aa8e7",
+    storageBucket: "workykt-aa8e7.firebasestorage.app",
+    messagingSenderId: "133063582958",
+    appId: "1:133063582958:web:4e97b790a5179270dd7fff",
+    measurementId: "G-SKZ0NRH7XJ"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const ordersDiv = document.getElementById('ordersList');
 
-    const ordersDiv = document.getElementById('ordersList');
-
-    async function загрузитьЗаказы() {
-      try {
-        const q = query(collection(db, "orders"), orderBy('timestamp', 'desc'));
-        const snapshot = await getDocs(q);
-
-        if (snapshot.empty) {
-          ordersDiv.innerHTML = 'Нет заказов';
-          return;
-        }
-
-        ordersDiv.innerHTML = '';
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          const div = document.createElement('div');
-          div.style.border = '1px solid #ccc';
-          div.style.padding = '10px';
-          div.style.marginBottom = '10px';
-          div.innerHTML = `
-            <b>Что требуется:</b><br>
-            <div style="white-space: pre-wrap;">${data.requirements}</div>
-            <b>Телефон:</b> <a href="tel:${data.phone}">${data.phone}</a><br>
-            <small>Дата: ${data.timestamp?.toDate().toLocaleString()}</small>
-          `;
-          ordersDiv.appendChild(div);
-        });
-      } catch (err) {
-        ordersDiv.textContent = 'Ошибка загрузки заказов: ' + err.message;
+  async function загрузитьЗаказы() {
+    try {
+      const q = query(collection(db, "orders"), orderBy('timestamp', 'desc'));
+      const snapshot = await getDocs(q);
+      if (snapshot.empty) {
+        ordersDiv.innerHTML = 'Нет заказов';
+        return;
       }
+      ordersDiv.innerHTML = '';
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        const div = document.createElement('div');
+        div.className = 'order';
+        div.innerHTML = `
+          <b>Что требуется:</b>
+          <div style="white-space: pre-wrap;">${data.requirements}</div>
+          <b>Телефон:</b> <a href="tel:${data.phone}">${data.phone}</a>
+          <small>Дата: ${data.timestamp?.toDate().toLocaleString()}</small>
+        `;
+        ordersDiv.appendChild(div);
+      });
+    } catch (err) {
+      ordersDiv.innerHTML = 'Ошибка загрузки заказов: ' + err.message;
     }
+  }
 
-    loadOrders();
-    setInterval(loadOrders, 5000);
-  </script>
+  загрузитьЗаказы();
+  setInterval(загрузитьЗаказы, 5000);
+</script>
 </body>
 </html>
