@@ -1,57 +1,104 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>Отправить заказ</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Отправить заказ</title>
+<!-- Можно подключить свой CSS сюда -->
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+    color: #333;
+  }
+  form {
+    background: #fff;
+    max-width: 500px;
+    margin: 0 auto 20px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  }
+  label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+  }
+  textarea, input[type="tel"] {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+</style>
 </head>
 <body>
-  <!-- Ваша форма для заказа -->
-  <form id="orderForm">
-    <label>Что требуется:</label><br>
-    <textarea id="requirements"></textarea><br>
-    <label>Телефон:</label><br>
-    <input type="tel" id="phone" required><br>
-    <button type="submit">Отправить заказ</button>
-  </form>
+<h1>Отправить заказ</h1>
+<form id="orderForm">
+  <label for="requirements">Что требуется:</label>
+  <textarea id="requirements" rows="4" placeholder="Опишите требования..."></textarea>
+  <label for="phone">Телефон:</label>
+  <input type="tel" id="phone" placeholder="Ваш номер телефона" required />
+  <button type="submit">Отправить заказ</button>
+</form>
 
-  <!-- Скрипт с Firebase SDK и вашей логикой -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCJ_U2qYotnhVwZZGhnAqEM7IETF9fscb8",
-      authDomain: "workykt-aa8e7.firebaseapp.com",
-      projectId: "workykt-aa8e7",
-      storageBucket: "workykt-aa8e7.firebasestorage.app",
-      messagingSenderId: "133063582958",
-      appId: "1:133063582958:web:4e97b790a5179270dd7fff",
-      measurementId: "G-SKZ0NRH7XJ"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyCJ_U2qYotnhVwZZGhnAqEM7IETF9fscb8",
+    authDomain: "workykt-aa8e7.firebaseapp.com",
+    projectId: "workykt-aa8e7",
+    storageBucket: "workykt-aa8e7.firebasestorage.app",
+    messagingSenderId: "133063582958",
+    appId: "1:133063582958:web:4e97b790a5179270dd7fff",
+    measurementId: "G-SKZ0NRH7XJ"
+  };
 
-    // Инициализация Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    const form = document.getElementById('orderForm');
+  const form = document.getElementById('orderForm');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const requirements = document.getElementById('requirements').value.trim();
-      const phone = document.getElementById('phone').value.trim();
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const requirements = document.getElementById('requirements').value.trim();
+    const phone = document.getElementById('phone').value.trim();
 
-      try {
-        await addDoc(collection(db, 'orders'), {
-          requirements,
-          phone,
-          timestamp: new Date()
-        });
-        alert('Заказ отправлен!');
-        form.reset();
-      } catch (err) {
-        alert('Ошибка: ' + err.message);
-      }
-    });
-  </script>
+    try {
+      await addDoc(collection(db, 'orders'), {
+        requirements,
+        phone,
+        timestamp: new Date()
+      });
+      alert('Заказ отправлен!');
+      form.reset();
+    } catch (err) {
+      alert('Ошибка: ' + err.message);
+    }
+  });
+</script>
 </body>
 </html>
+
