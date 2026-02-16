@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Мои заказы - Мастер</title>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    header {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        background: white;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .back-arrow {
+        font-size: 24px;
+        cursor: pointer;
+        text-decoration: none;
+        color: black;
+        margin-right: 10px;
+        user-select: none;
+    }
+    h1 {
+        margin: 0;
+        font-size: 20px;
+    }
+    main {
+        flex-grow: 1;
+        padding: 0 20px 20px;
+        overflow-y: auto;
+    }
+    .order-block {
+        background: white;
+        padding: 15px;
+        margin-top: 25px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .order-block:hover {
+        background-color: #e8e8e8;
+    }
+    .order-desc {
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+    .order-address {
+        font-style: italic;
+        color: #555;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <a href="master.html" class="back-arrow" title="Назад">&larr;</a>
+    <h1>Мои заказы</h1>
+</header>
+
+<main id="ordersContainer">
+    <!-- Заказы будут вставлены сюда скриптом -->
+</main>
+
+<script>
+// Функция для загрузки заказов из localStorage
+function loadOrders() {
+    const container = document.getElementById('ordersContainer');
+    container.innerHTML = '';
+
+    // Получаем массив заказов из localStorage
+    // Ожидаем, что там хранится JSON-массив объектов с {requirements, address}
+    let orders = JSON.parse(localStorage.getItem('clientOrders') || '[]');
+
+    if (orders.length === 0) {
+        container.innerHTML = '<p>Нет заказов.</p>';
+        return;
+    }
+
+    orders.forEach((order, index) => {
+        const block = document.createElement('div');
+        block.className = 'order-block';
+        block.tabIndex = 0; // для фокусировки
+        block.setAttribute('role', 'button');
+        block.setAttribute('aria-label', `Заказ: ${order.requirements}, адрес: ${order.address}`);
+        
+        block.innerHTML = `
+            <div class="order-desc">${order.requirements || '(Описание отсутствует)'}</div>
+            <div class="order-address">${order.address || '(Адрес отсутствует)'}</div>
+        `;
+
+        // При клике сохранить индекс выбранного заказа и перейти на страницу с деталями
+        block.onclick = () => {
+            localStorage.setItem('selectedOrderIndex', index);
+            window.location.href = 'master_order_detail.html';
+        };
+
+        container.appendChild(block);
+    });
+}
+
+loadOrders();
+</script>
+
+</body>
+</html>
