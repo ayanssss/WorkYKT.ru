@@ -4,128 +4,56 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Создать заказ</title>
-<!-- Общий стиль -->
-<style>
-  body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 40px 20px;
-  }
-  h1 {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #343a40;
-  }
-  form {
-    max-width: 600px;
-    margin: 0 auto;
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  }
-  label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    font-size: 14px;
-  }
-  textarea, input[type="tel"] {
-    width: 100%;
-    padding: 10px 12px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    box-sizing: border-box;
-  }
-  button {
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  button:hover {
-    background-color: #0056b3;
-  }
-  /* Сообщение об успешной отправке */
-  .message {
-    margin-top: 20px;
-    text-align: center;
-    color: green;
-    font-weight: 600;
-  }
-</style>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js"></script>
 </head>
 <body>
-
-<h1>Оформите заказ</h1>
+<h1>Оставить заказ</h1>
 
 <form id="orderForm">
-  <label for="requirements">Что требуется:</label>
-  <textarea id="requirements" rows="4" placeholder="Подробно опишите заказ"></textarea>
-
-  <label for="phone">Телефон:</label>
-  <input type="tel" id="phone" placeholder="Ваш номер" required />
-
+  <input type="text" id="requirements" placeholder="Требования" required />
+  <input type="text" id="phone" placeholder="Телефон" required />
   <button type="submit">Отправить заказ</button>
 </form>
 
-<div class="message" id="statusMessage"></div>
-
-<script type="module">
-  import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js';
-  import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js';
-
+<script>
   const firebaseConfig = {
-    apiKey: "AIzaSyCJ_U2qYotnhVwZZGhnAqEM7IETF9fscb8",
-    authDomain: "workykt-aa8e7.firebaseapp.com",
-    projectId: "workykt-aa8e7",
-    storageBucket: "workykt-aa8e7.firebaseapp.com",
-    messagingSenderId: "133063582958",
-    appId: "1:133063582958:web:4e97b790a5179270dd7fff"
+    apiKey: "ВАШ_API_KEY",
+    authDomain: "ВАШ_ДОМЕН.firebaseapp.com",
+    projectId: "ВАШ_PROJECT_ID",
+    storageBucket: "ВАШ_BUCKET.appspot.com",
+    messagingSenderId: "ВАШ_SENDER_ID",
+    appId: "ВАШ_APP_ID"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
   const form = document.getElementById('orderForm');
-  const messageDiv = document.getElementById('statusMessage');
 
-  form.addEventListener('submit', async function(e) {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const requirements = document.getElementById('requirements').value.trim();
-    const phone = document.getElementById('phone').value.trim();
 
-    if (!requirements || !phone) {
-      messageDiv.style.color = 'red';
-      messageDiv.textContent = 'Пожалуйста, заполните все поля.';
-      return;
-    }
+    const requirements = document.getElementById('requirements').value;
+    const phone = document.getElementById('phone').value;
 
     try {
-      await addDoc(collection(db, 'orders'), {
-        requirements: requirements,
-        phone: phone,
+      await db.collection('orders').add({
+        requirements,
+        phone,
         timestamp: new Date()
       });
-      messageDiv.style.color = 'green';
-      messageDiv.textContent = 'Заказ успешно отправлен!';
+      alert('Ваш заказ отправлен!');
       form.reset();
-    } catch (err) {
-      messageDiv.style.color = 'red';
-      messageDiv.textContent = 'Ошибка при отправке: ' + err.message;
+    } catch (error) {
+      console.error('Ошибка:', error);
+      alert('Ошибка при отправке заказа');
     }
   });
 </script>
-
 </body>
 </html>
+
 
 
