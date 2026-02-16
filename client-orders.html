@@ -3,102 +3,129 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Отправить заказ</title>
-<!-- Можно подключить свой CSS сюда -->
+<title>Создать заказ</title>
+<!-- Общий стиль -->
 <style>
   body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #f8f9fa;
     margin: 0;
-    padding: 20px;
+    padding: 40px 20px;
   }
   h1 {
     text-align: center;
-    color: #333;
+    margin-bottom: 30px;
+    color: #343a40;
   }
   form {
-    background: #fff;
-    max-width: 500px;
-    margin: 0 auto 20px;
-    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   }
   label {
     display: block;
-    margin-top: 10px;
-    font-weight: bold;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 14px;
   }
   textarea, input[type="tel"] {
     width: 100%;
-    padding: 8px;
-    margin-top: 5px;
+    padding: 10px 12px;
+    margin-bottom: 20px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
   }
   button {
-    margin-top: 15px;
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     background-color: #007bff;
     border: none;
     border-radius: 4px;
-    color: #fff;
     font-size: 16px;
+    color: #fff;
     cursor: pointer;
+    transition: background-color 0.3s ease;
   }
   button:hover {
     background-color: #0056b3;
   }
+  /* Сообщение об успешной отправке */
+  .message {
+    margin-top: 20px;
+    text-align: center;
+    color: green;
+    font-weight: 600;
+  }
 </style>
 </head>
 <body>
-<h1>Отправить заказ</h1>
+
+<h1>Оформите заказ</h1>
+
 <form id="orderForm">
   <label for="requirements">Что требуется:</label>
-  <textarea id="requirements" rows="4" placeholder="Опишите требования..."></textarea>
+  <textarea id="requirements" rows="4" placeholder="Подробно опишите заказ"></textarea>
+
   <label for="phone">Телефон:</label>
-  <input type="tel" id="phone" placeholder="Ваш номер телефона" required />
+  <input type="tel" id="phone" placeholder="Ваш номер" required />
+
   <button type="submit">Отправить заказ</button>
 </form>
 
+<div class="message" id="statusMessage"></div>
+
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js';
+  import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js';
 
   const firebaseConfig = {
     apiKey: "AIzaSyCJ_U2qYotnhVwZZGhnAqEM7IETF9fscb8",
     authDomain: "workykt-aa8e7.firebaseapp.com",
     projectId: "workykt-aa8e7",
-    storageBucket: "workykt-aa8e7.firebasestorage.app",
+    storageBucket: "workykt-aa8e7.firebaseapp.com",
     messagingSenderId: "133063582958",
-    appId: "1:133063582958:web:4e97b790a5179270dd7fff",
-    measurementId: "G-SKZ0NRH7XJ"
+    appId: "1:133063582958:web:4e97b790a5179270dd7fff"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
   const form = document.getElementById('orderForm');
+  const messageDiv = document.getElementById('statusMessage');
 
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', async function(e) {
     e.preventDefault();
     const requirements = document.getElementById('requirements').value.trim();
     const phone = document.getElementById('phone').value.trim();
 
+    if (!requirements || !phone) {
+      messageDiv.style.color = 'red';
+      messageDiv.textContent = 'Пожалуйста, заполните все поля.';
+      return;
+    }
+
     try {
       await addDoc(collection(db, 'orders'), {
-        requirements,
-        phone,
+        requirements: requirements,
+        phone: phone,
         timestamp: new Date()
       });
-      alert('Заказ отправлен!');
+      messageDiv.style.color = 'green';
+      messageDiv.textContent = 'Заказ успешно отправлен!';
       form.reset();
     } catch (err) {
-      alert('Ошибка: ' + err.message);
+      messageDiv.style.color = 'red';
+      messageDiv.textContent = 'Ошибка при отправке: ' + err.message;
     }
   });
 </script>
+
 </body>
 </html>
+
 
