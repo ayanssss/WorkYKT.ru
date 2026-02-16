@@ -2,51 +2,141 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Все заказы</title>
-<!-- Firebase SDK -->
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Мои заказы - Мастер</title>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    header {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        background: white;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .back-arrow {
+        font-size: 24px;
+        cursor: pointer;
+        text-decoration: none;
+        color: black;
+        margin-right: 10px;
+        user-select: none;
+    }
+    h1 {
+        margin: 0;
+        font-size: 20px;
+    }
+    main {
+        flex-grow: 1;
+        padding: 20px;
+        overflow-y: auto;
+    }
+    .order-block {
+        background: white;
+        padding: 15px;
+        margin-top: 25px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .order-block:hover {
+        background-color: #e8e8e8;
+    }
+    .order-desc {
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+    .order-address {
+        font-style: italic;
+        color: #555;
+    }
+</style>
+<!-- Подключение Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js"></script>
 </head>
 <body>
-<h1>Все заказы</h1>
-<ul id="ordersList"></ul>
+
+<header>
+    <a href="master.html" class="back-arrow" title="Назад">&larr;</a>
+    <h1>Мои заказы</h1>
+</header>
+
+<main id="ordersContainer">
+    <!-- Заказы будут загружены сюда -->
+</main>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyCJ_U2qYotnhVwZZGhnAqEM7IETF9fscb8",
-  authDomain: "workykt-aa8e7.firebaseapp.com",
-  databaseURL: "https://workykt-aa8e7-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "workykt-aa8e7",
-  storageBucket: "workykt-aa8e7.firebasestorage.app",
-  messagingSenderId: "133063582958",
-  appId: "1:133063582958:web:4e97b790a5179270dd7fff",
-  measurementId: "G-SKZ0NRH7XJ"
-};
+ // Вставьте сюда свои параметры конфигурации Firebase
+ const firebaseConfig = {
+   apiKey: "AIzaSyCJ_U2qYotnhVwZZGhnAqEM7IETF9fscb8",
+   authDomain: "workykt-aa8e7.firebaseapp.com",
+   projectId: "workykt-aa8e7",
+   storageBucket: "workykt-aa8e7.firebasestorage.app",
+   messagingSenderId: "133063582958",
+   appId: "1:133063582958:web:4e97b790a5179270dd7fff"
+ };
+ 
+ // Инициализация Firebase
+ const app = firebase.initializeApp(firebaseConfig);
+ const db = firebase.firestore();
 
-  const app = firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+function loadOrders() {
+    const container = document.getElementById('ordersContainer');
+    container.innerHTML = '<p>Загрузка заказов...</p>';
 
-  const ordersList = document.getElementById('ordersList');
+    db.collection('orders').orderBy('timestamp', 'desc').get()
+    .then(querySnapshot => {
+        if (querySnapshot.empty) {
+            container.innerHTML = '<p>Нет заказов.</p>';
+            return;
+        }
+        container.innerHTML = '';
+        querySnapshot.forEach(doc => {
+            const data = doc.data();
 
-  // Получение и отображение всех заказов в реальном времени
-  db.collection('orders').orderBy('timestamp', 'desc')
-    .onSnapshot(snapshot => {
-      ordersList.innerHTML = '';
-      snapshot.forEach(doc => {
-        const data = doc.data();
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <strong>Требования:</strong> ${data.requirements} <br>
-          <strong>Телефон:</strong> ${data.phone}<br>
-          <em>Заказ создан: ${data.timestamp ? data.timestamp.toDate() : ''}</em>
-        `;
-        ordersList.appendChild(li);
-      });
+            const block = document.createElement('div');
+            block.className = 'order-block';
+            block.tabIndex = 0; 
+            block.setAttribute('role', 'button');
+            block.setAttribute('aria-label', `Заказ: ${data.requirements}, адрес: ${data.address}`);
+
+            block.innerHTML = `
+                <div class="order-desc">${data.requirements || '(Описание отсутствует)'}</div>
+                <div class="order-address">${data.address || '(Адрес отсутствует)'}</div>
+            `;
+
+            // Передача ID заказа для перехода к деталям
+            block.onclick = () => {
+                localStorage.setItem('selectedOrderId', doc.id);
+                window.location.href = 'master_order_detail.html';
+            };
+
+            container.appendChild(block);
+        });
+    })
+    .catch(error => {
+        console.error("Ошибка загрузки заказов:", error);
+        container.innerHTML = '<p>Ошибка при загрузке заказов.</p>';
     });
+}
+
+// Запускаем загрузку
+loadOrders();
 </script>
+
 </body>
 </html>
-</html>
+
 
 
