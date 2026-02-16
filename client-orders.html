@@ -2,33 +2,126 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Создать заказ</title>
-<!-- Firebase SDK -->
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Закзчик</title>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    header {
+        height: 60px;
+        background: white;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        user-select: none;
+    }
+    .back-arrow {
+        font-size: 24px;
+        cursor: pointer;
+        text-decoration: none;
+        color: black;
+        margin-right: 10px;
+    }
+    h1 {
+        margin: 0;
+        font-size: 20px;
+    }
+    main {
+        flex-grow: 1;
+        padding: 20px;
+    }
+    form {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        max-width: 500px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    label {
+        display: flex;
+        flex-direction: column;
+        font-weight: 600;
+        color: #444;
+        font-size: 14px;
+    }
+    input[type="text"] {
+        margin-top: 8px;
+        padding: 10px 12px;
+        font-size: 16px;
+        border: 1.5px solid #ccc;
+        border-radius: 8px;
+        transition: border-color 0.3s;
+    }
+    input[type="text"]:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+    button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 14px;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-weight: bold;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
+<!-- Подключаем Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js"></script>
 </head>
 <body>
-<h1>Оставить заказ</h1>
 
-<form id="orderForm">
-  <input type="text" id="requirements" placeholder="Требования" required />
-  <input type="text" id="phone" placeholder="Телефон" required />
-  <button type="submit">Отправить заказ</button>
-</form>
+<header>
+    <a href="client.html" class="back-arrow" title="Назад">&larr;</a>
+    <h1>Мои заказы</h1>
+</header>
+
+<main>
+    <form id="orderForm" autocomplete="off">
+        <label for="requirements">
+            Что потребуется:
+            <input type="text" id="requirements" name="requirements" required />
+        </label>
+
+        <label for="address">
+            Адрес:
+            <input type="text" id="address" name="address" required />
+        </label>
+
+        <button type="submit">Сохранить заказ</button>
+    </form>
+</main>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyCJ_U2qYotnhVwZZGhnAqEM7IETF9fscb8",
-  authDomain: "workykt-aa8e7.firebaseapp.com",
-  databaseURL: "https://workykt-aa8e7-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "workykt-aa8e7",
-  storageBucket: "workykt-aa8e7.firebasestorage.app",
-  messagingSenderId: "133063582958",
-  appId: "1:133063582958:web:4e97b790a5179270dd7fff",
-  measurementId: "G-SKZ0NRH7XJ"
-};
+  // Вставьте сюда свои конфигурационные параметры Firebase
+  const firebaseConfig = {
+    apiKey: "ВАШ_API_KEY",
+    authDomain: "ВАШ_ДОМЕН.firebaseapp.com",
+    projectId: "ВАШ_PROJECT_ID",
+    storageBucket: "ВАШ_BUCKET.appspot.com",
+    messagingSenderId: "ВАШ_SENDER_ID",
+    appId: "ВАШ_APP_ID"
+  };
 
+  // Инициализация Firebase
   const app = firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
@@ -37,25 +130,33 @@ const firebaseConfig = {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const requirements = document.getElementById('requirements').value;
-    const phone = document.getElementById('phone').value;
+    const requirements = document.getElementById('requirements').value.trim();
+    const address = document.getElementById('address').value.trim();
 
+    if (!requirements || !address) {
+      alert('Пожалуйста, заполните оба поля');
+      return;
+    }
+
+    // Сохраняем в Firestore
     try {
       await db.collection('orders').add({
-        requirements,
-        phone,
-        timestamp: new Date()
+        requirements: requirements,
+        address: address,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
       });
-      alert('Ваш заказ отправлен!');
+      alert('Заказ сохранён!');
       form.reset();
     } catch (error) {
-      console.error('Ошибка:', error);
-      alert('Ошибка при отправке заказа');
+      console.error('Ошибка при сохранении заказа:', error);
+      alert('Произошла ошибка. Попробуйте позже.');
     }
   });
 </script>
+
 </body>
 </html>
+
 
 
 
